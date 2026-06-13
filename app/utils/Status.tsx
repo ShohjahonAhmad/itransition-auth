@@ -1,8 +1,4 @@
-export enum UserStatus {
-  Active = "Active",
-  Blocked = "Blocked",
-  Unverified = "Unverified",
-}
+import { UserStatus } from "~/types/user";
 
 export default function Status({ status }: { status: string }) {
   const bgColor =
