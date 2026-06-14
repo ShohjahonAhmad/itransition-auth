@@ -1,40 +1,58 @@
-# Welcome to React Router!
+# User Management Frontend
 
-A modern, production-ready template for building full-stack React applications using React Router.
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+Frontend application for the User Management System built with React Router v7, TypeScript, and Tailwind CSS.
 
 ## Features
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- User registration
+- User login
+- Email verification flow
+- Protected routes for authenticated users
+- Responsive user management dashboard
+- User selection using checkboxes
+- Select all / deselect all functionality
+- Block users
+- Unblock users
+- Delete users
+- Delete unverified users
+- Status messages for successful operations
+- Tooltips for toolbar actions
+- Automatic logout when the authenticated user becomes blocked or deleted
 
-## Getting Started
+## Tech Stack
 
-### Installation
+- React Router v7
+- TypeScript
+- Tailwind CSS
+- Fetch API
 
-Install the dependencies:
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/ShohjahonAhmad/itransition-auth
+```
+
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-### Development
+Create a `.env` file:
 
-Start the development server with HMR:
+```env
+VITE_API_URL=<backend-api-url>
+```
+
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
+## Build
 
 Create a production build:
 
@@ -42,46 +60,37 @@ Create a production build:
 npm run build
 ```
 
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
+Preview the production build:
 
 ```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
+npm run preview
 ```
 
-The containerized application can be deployed to any platform that supports Docker, including:
+## Environment Variables
 
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
+| Variable     | Description     |
+| ------------ | --------------- |
+| VITE_API_URL | Backend API URL |
 
-### DIY Deployment
+## Authentication
 
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
+Authentication is handled using JWT tokens stored in localStorage.
 
-Make sure to deploy the output of `npm run build`
+Protected pages automatically redirect unauthenticated users to the login page.
 
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
+If a user's account is deleted or blocked while logged in, the application removes the stored token and redirects the user to the login page.
 
-## Styling
+## User Management
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+The dashboard provides a toolbar for performing bulk actions on selected users:
 
----
+- Block
+- Unblock
+- Delete
+- Delete unverified
 
-Built with ❤️ using React Router.
+Multiple rows can be selected using checkboxes. The header checkbox selects or deselects all users.
+
+## Deployment
+
+The frontend is deployed separately from the backend and communicates through the configured API URL.

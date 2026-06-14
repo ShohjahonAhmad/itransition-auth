@@ -17,8 +17,9 @@ export default function RegisterSuccess() {
         </p>
         <div className="mt-10 flex w-full py-2 px-4 bg-gray-800 border border-gray-700 rounded-md">
           <p className="text-center text-sm/6 text-gray-400">
-            Didn't receive an email? Check your spam folder or wait a few
-            minutes. The link expires in 15 minutes.
+            Didn't receive an email? Check your spam folder and make sure you
+            entered the correct email address. Delivery may take up to 5
+            minutes.
           </p>
         </div>
         <button

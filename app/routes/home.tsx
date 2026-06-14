@@ -194,7 +194,7 @@ export default function Home() {
             <tbody className="bg-[#1f2937] divide-y divide-gray-700">
               {users.map((user) => (
                 <tr
-                  className="hover:bg-[#263244] transition-colors"
+                  className={`hover:bg-[#263244] transition-colors ${selectedUsers.includes(user.id) && "bg-[#263244]"}`}
                   key={user.id}
                 >
                   <td className="px-2 lg:px-1 py-3 text-center">
