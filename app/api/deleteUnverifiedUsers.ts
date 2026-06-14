@@ -13,6 +13,8 @@ export default async function deleteUnverifiedUsers(userIds: string[]) {
             const errorData = await response.json();
             throw new Error(errorData.error || "Failed to delete unverified users");
         }
+
+        return await response.json();
     } catch(err) {
         throw new Error(err instanceof Error ? err.message : "An unknown error occurred");
     }

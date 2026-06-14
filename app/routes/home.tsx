@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Route } from "./+types/home";
 import {
   redirect,
@@ -17,6 +17,7 @@ import deleteUsers from "~/api/deleteUsers";
 import deleteUnverifiedUsers from "~/api/deleteUnverifiedUsers";
 import type { User } from "~/types/user";
 import Menu from "~/Menu";
+import Tick from "~/utils/Tick";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -47,11 +48,13 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const revalidator = useRevalidator();
   const navigate = useNavigate();
+  const [message, setMessage] = useState<string>("");
 
-  async function executeAction(action: () => Promise<void>) {
+  async function executeAction(action: () => Promise<{ message: string }>) {
     try {
       setLoading(true);
-      await action();
+      const result = await action();
+      setMessage(result.message);
       setSelectedUsers([]);
       revalidator.revalidate();
     } catch (err) {
@@ -62,16 +65,33 @@ export default function Home() {
     }
   }
 
+  useEffect(() => {
+    if (message.length > 0) {
+      const timeout = setTimeout(() => setMessage(""), 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [message]);
+
   return (
     <>
       <Menu />
       <main className="min-h-full px-6 py-12 lg:px-8">
-        <h2 className="mt-10 text-2xl/9 font-bold tracking-tight text-white">
-          User Management
-        </h2>
-        <p className="mt-1 text-sm/6 text-gray-400">
-          Manage registered users — block, unblock, or remove accounts.
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="mt-10 text-2xl/9 font-bold tracking-tight text-white">
+              User Management
+            </h2>
+            <p className="mt-1 text-sm/6 text-gray-400">
+              Manage registered users — block, unblock, or remove accounts.
+            </p>
+          </div>
+          {message.length > 0 && (
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-md border bg-[#22c55e] text-white border-[#22c55e] text-sm">
+              <Tick />
+              <span>{message}</span>
+            </div>
+          )}
+        </div>
         <div className="flex justify-between">
           <div className="flex items-center gap-2 bg-[#161e2e] border border-gray-700 text-gray-400 rounded-md p-4 mt-6">
             <span className="text-sm mr-2 text-[#9ca3af]">
@@ -79,43 +99,51 @@ export default function Home() {
             </span>
             <div className="w-px h-5 bg-[#374151] mx-1"></div>
             <div className="flex gap-2 items-center">
-              <button
-                disabled={selectedUsers.length === 0 || loading}
-                className="flex gap-1.5 px-3 py-1.5 items-center font-medium text-sm text-gray-50 bg-[#1f2937] rounded-md border border-gray-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                onClick={async () =>
-                  await executeAction(() => blockUsers(selectedUsers, true))
-                }
-              >
-                <Block />
-                Block
-              </button>
-              <button
-                disabled={selectedUsers.length === 0 || loading}
-                className="flex w-8 h-8 items-center text-gray-50 bg-[#1f2937] rounded-md p-2 border border-gray-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                onClick={async () =>
-                  executeAction(() => blockUsers(selectedUsers, false))
-                }
-              >
-                <Unblock />
-              </button>
-              <button
-                disabled={selectedUsers.length === 0 || loading}
-                className="flex w-8 h-8 items-center text-[#ef4444] bg-[#1f2937] rounded-md p-2 border border-gray-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                onClick={async () =>
-                  executeAction(() => deleteUsers(selectedUsers))
-                }
-              >
-                <Delete />
-              </button>
-              <button
-                disabled={selectedUsers.length === 0 || loading}
-                className="flex w-8 h-8 items-center text-gray-50 bg-[#1f2937] rounded-md p-2 border border-gray-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                onClick={async () =>
-                  executeAction(() => deleteUnverifiedUsers(selectedUsers))
-                }
-              >
-                <Clean />
-              </button>
+              <div title="Delete selected users">
+                <button
+                  disabled={selectedUsers.length === 0 || loading}
+                  className="flex gap-1.5 px-3 py-1.5 items-center font-medium text-sm text-gray-50 bg-[#1f2937] rounded-md border border-gray-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={async () =>
+                    await executeAction(() => blockUsers(selectedUsers, true))
+                  }
+                >
+                  <Block />
+                  Block
+                </button>
+              </div>
+              <div title="Unblock selected users">
+                <button
+                  disabled={selectedUsers.length === 0 || loading}
+                  className="flex w-8 h-8 items-center text-gray-50 bg-[#1f2937] rounded-md p-2 border border-gray-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={async () =>
+                    executeAction(() => blockUsers(selectedUsers, false))
+                  }
+                >
+                  <Unblock />
+                </button>
+              </div>
+              <div title="Delete selected users">
+                <button
+                  disabled={selectedUsers.length === 0 || loading}
+                  className="flex w-8 h-8 items-center text-[#ef4444] bg-[#1f2937] rounded-md p-2 border border-gray-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={async () =>
+                    executeAction(() => deleteUsers(selectedUsers))
+                  }
+                >
+                  <Delete />
+                </button>
+              </div>
+              <div title="Delete selected unverified users">
+                <button
+                  disabled={selectedUsers.length === 0 || loading}
+                  className="flex w-8 h-8 items-center text-gray-50 bg-[#1f2937] rounded-md p-2 border border-gray-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={async () =>
+                    executeAction(() => deleteUnverifiedUsers(selectedUsers))
+                  }
+                >
+                  <Clean />
+                </button>
+              </div>
             </div>
           </div>
         </div>
