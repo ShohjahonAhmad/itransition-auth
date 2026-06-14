@@ -1,4 +1,10 @@
-import { Form, Link, redirect, useActionData } from "react-router";
+import {
+  Form,
+  Link,
+  redirect,
+  useActionData,
+  useNavigation,
+} from "react-router";
 import type { Route } from "../+types/root";
 import itransition from "../../public/itransition.png";
 import login from "~/api/login";
@@ -20,6 +26,8 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 
 export default function Login() {
   const actionData = useActionData();
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
 
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
@@ -35,7 +43,7 @@ export default function Login() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        {actionData?.error && (
+        {!isSubmitting && actionData?.error && (
           <div className="mb-4 rounded-md bg-red-900/50 p-3 text-red-200">
             {actionData.error}
           </div>
@@ -69,14 +77,6 @@ export default function Login() {
               >
                 Password
               </label>
-              {/* <div className="text-sm">
-                <a
-                  href="#"
-                  className="font-semibold text-indigo-400 hover:text-indigo-300"
-                >
-                  Forgot password?
-                </a>
-              </div> */}
             </div>
             <div className="mt-2">
               <input

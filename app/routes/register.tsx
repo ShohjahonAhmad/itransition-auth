@@ -28,6 +28,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 export default function Register() {
   const navigation = useNavigation();
   const actionData = useActionData();
+  const isSubmitting = navigation.state === "submitting";
 
   return (
     <>
@@ -44,7 +45,7 @@ export default function Register() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          {actionData?.error && (
+          {!isSubmitting && actionData?.error && (
             <div className="mb-4 rounded-md bg-red-900/50 p-3 text-red-200">
               {actionData.error}
             </div>
@@ -113,8 +114,8 @@ export default function Register() {
             <div>
               <button
                 type="submit"
-                disabled={navigation.state === "submitting"}
-                className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                disabled={isSubmitting}
+                className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Sign up
               </button>
